@@ -21,6 +21,7 @@ async def main():
     record_mode = "--record" in sys.argv
     replay_mode = "--replay" in sys.argv
     headless = "--headless" in sys.argv
+    process_results = False
 
     recorder = None
     if RequestRecorder and (record_mode or replay_mode):
@@ -47,11 +48,11 @@ async def main():
             recorder.setup_recording(page)
 
         try:
-            await page.goto(FP_RANKINGS_PAGE, timeout=60000)
+            await page.goto(FP_RANKINGS_PAGE, wait_until="load", timeout=60000)
 
             await login(page)
             await player_rankings_page.download_all_rankings(page)
-
+            process_results = True
         except Exception as e:
             logger.error(f"Error during scraping: {e}")
             await page.screenshot(path=DOWNLOAD_DIR / "error_screenshot.png")
@@ -61,7 +62,8 @@ async def main():
                 recorder.save_cassette()
             await browser.close()
 
-    content_handler.merge_csvs()
+    if process_results:
+        content_handler.merge_csvs()
 
 
 if __name__ == "__main__":

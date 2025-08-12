@@ -1,6 +1,5 @@
 import logging
 import os
-import random
 from urllib.request import urlretrieve
 
 from playwright.async_api import Page
@@ -8,7 +7,7 @@ from pydub import AudioSegment
 from speech_recognition import AudioFile, Recognizer
 
 from fp_scraper.config import MP3_PATH, WAV_PATH
-
+from fp_scraper.utils import delay_page
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -20,9 +19,6 @@ class SolveCaptcha:
         self.main_frame = None
         self.recaptcha = None
 
-    async def delay(self):
-        await self.page.wait_for_timeout(random.randint(1, 3) * 1000)
-
     async def presetup(self):
         try:
             name = await self.page.locator(
@@ -32,7 +28,7 @@ class SolveCaptcha:
             if self.recaptcha is None:
                 raise ValueError("reCAPTCHA frame not found")
             await self.recaptcha.click("//div[@class='recaptcha-checkbox-border']")
-            await self.delay()
+            await delay_page(self.page)
             # s = self.recaptcha.locator("//span[@id='recaptcha-anchor']")
             # if s.get_attribute("aria-checked") != "false":  # solved already
             #     return
@@ -52,7 +48,7 @@ class SolveCaptcha:
         await self.presetup()
         tries = 0
         while tries <= 5:
-            await self.delay()
+            await delay_page(self.page)
             try:
                 await self.solve_captcha()
             except Exception as e:
@@ -66,7 +62,7 @@ class SolveCaptcha:
                 s = self.recaptcha.locator("//span[@id='recaptcha-anchor']")
                 if s.get_attribute("aria-checked") != "false":
                     await self.page.click("id=recaptcha-demo-submit")
-                    await self.delay()
+                    await delay_page(self.page)
                     break
             tries += 1
 
@@ -112,14 +108,14 @@ class SolveCaptcha:
                 raise ValueError("Failed to recognize audio")
             await self.main_frame.fill("id=audio-response", text)
             await self.main_frame.click("id=recaptcha-verify-button")
-            await self.delay()
+            await delay_page(self.page)
         except Exception as e:
             logger.error(f"Error during audio recognition: {e}")
             raise e
 
     def __del__(self):
-        os.remove("audio.mp3")
-        os.remove("audio.wav")
+        os.remove(MP3_PATH)
+        os.remove(WAV_PATH)
 
 
 # async def wait_for_captcha(page: Page):
