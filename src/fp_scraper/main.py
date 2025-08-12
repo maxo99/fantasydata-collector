@@ -34,21 +34,24 @@ async def main():
     async with Stealth().use_async(async_playwright()) as p:
         browser = await p.chromium.launch(headless=headless, args=BROWSER_ARGS)
         logger.info(f"Launching browser with {headless=} and {BROWSER_ARGS=}")
-        # if record_mode:
-        #     context = browser.new_context(
-        #         record_video_dir="videos/",
-        #         record_video_size={"width": 640, "height": 480},
-        #     )
-        #     page: Page = context.new_page()
-        # else:
-        page: Page = await browser.new_page()
+        
+        context = None
+        if record_mode:
+            context = await browser.new_context(
+                record_video_dir="videos/",
+                record_video_size={"width": 640, "height": 480},
+            )
+            await context.tracing.start(screenshots=True, snapshots=True, sources=True)
+            page: Page = await context.new_page()
+        else:
+            page: Page = await browser.new_page()
 
         if recorder:
             logger.info(f"Using request recorder in {recorder.mode} mode")
             recorder.setup_recording(page)
 
         try:
-            await page.goto(FP_RANKINGS_PAGE, wait_until="load", timeout=60000)
+            await page.goto(FP_RANKINGS_PAGE, wait_until="domcontentloaded", timeout=60000)
 
             await login(page)
             await player_rankings_page.download_all_rankings(page)
@@ -58,6 +61,10 @@ async def main():
             await page.screenshot(path=DOWNLOAD_DIR / "error_screenshot.png")
 
         finally:
+            if record_mode and context:
+                await context.tracing.stop(path = DOWNLOAD_DIR / "trace.zip")
+
+
             if recorder and record_mode:
                 recorder.save_cassette()
             await browser.close()

@@ -30,10 +30,11 @@ async def download_all_rankings(page: Page):
 async def get_dropdown_options(page: Page):
     try:
         logger.info("Retrieving dropdown options")
-        dropdown_button = page.locator('//*[@id="select-advanced-2136961"]/div/button')
+        dropdown_button = page.locator('/html/body/div[1]/div[3]/div/div[1]/div[2]/div[2]/div[1]/div[3]/div/div/button/i')
+        # dropdown_button = page.locator('//*[@class="select-advanced__button"]')
         await dropdown_button.click()
 
-        options = await page.locator('//*[@id="select-advanced-2136961"]//li').all()
+        options = await page.locator('//*[@class="select-advanced__list select-advanced__list--show"]//li').all()
         option_texts = []
         for option in options:
             text = await option.text_content()
