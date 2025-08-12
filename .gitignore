@@ -8,5 +8,9 @@ wheels/
 *.env
 # Virtual environments
 .venv
+/downloads/**.mp3
+/downloads/**.wav
+/downloads/**.png
+
 
 /cassettes/**.json
