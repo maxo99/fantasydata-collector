@@ -1,0 +1,26 @@
+[project]
+name = "fantasypros-rankings-pull"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "ipykernel>=6.30.1",
+    "pandas>=2.3.1",
+    "playwright>=1.54.0",
+    "python-dotenv>=1.1.1",
+]
+
+
+[tool.pylint.messages_control]
+disable = [
+    "C0114",  # missing-module-docstring
+    "C0115",  # missing-class-docstring
+    "C0116",  # missing-function-docstring
+    "R0903",  # too-few-public-methods
+    "R0913",  # too-many-arguments
+    "R0914",  # too-many-locals
+    "W1203",  # logging-format-interpolation
+    "W0718",  # exception-escape
+    "W0511",  # TODOs
+]
