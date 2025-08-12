@@ -28,7 +28,9 @@ BROWSER_ARGS = [
     # "--ignore-certificate-errors",
     # "--no-service-autorun",
     # "--password-store=basic",
-    # "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
+    # "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64)
+    #  AppleWebKit/537.36 (KHTML, like Gecko)
+    # Chrome/90.0.4430.212 Safari/537.36",
     "--window-size=640,480",
-    "--disable-audio-output",
+    # "--disable-audio-output",
 ]

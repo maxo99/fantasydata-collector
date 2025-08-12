@@ -16,3 +16,5 @@ if not FP_EMAIL or not FP_PASSWORD:
     )
 DOWNLOAD_DIR = Path("downloads" + os.sep + RUN_ID)
 DOWNLOAD_DIR.mkdir(exist_ok=True)
+MP3_PATH = DOWNLOAD_DIR / "audio.mp3"
+WAV_PATH = DOWNLOAD_DIR / "audio.wav"

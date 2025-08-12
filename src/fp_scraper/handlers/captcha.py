@@ -7,7 +7,7 @@ from playwright.async_api import Page
 from pydub import AudioSegment
 from speech_recognition import AudioFile, Recognizer
 
-from fp_scraper.config import DOWNLOAD_DIR
+from fp_scraper.config import MP3_PATH, WAV_PATH
 
 
 logging.basicConfig(level=logging.INFO)
@@ -87,19 +87,17 @@ class SolveCaptcha:
             ).get_attribute("href")
             if href is None:
                 raise ValueError("Audio challenge link not found")
-            urlretrieve(href, DOWNLOAD_DIR / "audio.mp3")
+            urlretrieve(href, MP3_PATH)
         except Exception as e:
             logger.error(f"Error during audio download: {e}")
             raise e
 
         try:
             logger.info("Processing audio file")
-            AudioSegment.converter = "ffmpeg"  # Ensure ffmpeg is used for conversion
-            AudioSegment.ffmpeg = "ffmpeg"  # Path to ffmpeg if needed
-            AudioSegment.from_mp3(DOWNLOAD_DIR / "audio.mp3").export(
-                DOWNLOAD_DIR / "audio.wav", format="wav"
-            )
-            recaptcha_audio = AudioFile(DOWNLOAD_DIR / "audio.wav")
+            AudioSegment.converter = "ffmpeg"
+            AudioSegment.ffmpeg = "ffmpeg"
+            AudioSegment.from_mp3(MP3_PATH).export(WAV_PATH, format="wav")
+            recaptcha_audio = AudioFile(str(WAV_PATH))
             with recaptcha_audio as source:
                 audio = recognizer.record(source)
         except Exception as e:
@@ -122,3 +120,16 @@ class SolveCaptcha:
     def __del__(self):
         os.remove("audio.mp3")
         os.remove("audio.wav")
+
+
+# async def wait_for_captcha(page: Page):
+#     try:
+#         await page.wait_for_selector(
+#             "iframe[src*='recaptcha'], div.g-recaptcha, div.h-captcha, iframe#cf-chl-widget",
+#             timeout=10000,
+#         )
+#         logger.info("Captcha detected")
+#         return True
+#     except Exception as e:
+#         logger.info(f"No captcha detected {e=}")
+#         return False
