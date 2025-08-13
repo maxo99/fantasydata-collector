@@ -348,6 +348,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "ipykernel" },
+    { name = "my-fake-useragent" },
     { name = "pandas" },
     { name = "playwright" },
     { name = "playwright-stealth" },
@@ -368,6 +369,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "ipykernel", specifier = ">=6.30.1" },
+    { name = "my-fake-useragent", specifier = ">=0.2.1" },
     { name = "pandas", specifier = ">=2.3.1" },
     { name = "playwright", specifier = ">=1.54.0" },
     { name = "playwright-stealth", specifier = ">=2.0.0" },
@@ -863,6 +865,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/b2/0a/2436550b1520091af0600dff547913cb2d66fbac27a8c33bc1b1bccd8d98/multidict-6.6.4-cp313-cp313t-win_amd64.whl", hash = "sha256:6d46a180acdf6e87cc41dc15d8f5c2986e1e8739dc25dbb7dac826731ef381a4", size = 53100, upload-time = "2025-08-11T12:08:13.823Z" },
     { url = "https://files.pythonhosted.org/packages/97/ea/43ac51faff934086db9c072a94d327d71b7d8b40cd5dcb47311330929ef0/multidict-6.6.4-cp313-cp313t-win_arm64.whl", hash = "sha256:756989334015e3335d087a27331659820d53ba432befdef6a718398b0a8493ad", size = 45501, upload-time = "2025-08-11T12:08:15.173Z" },
     { url = "https://files.pythonhosted.org/packages/fd/69/b547032297c7e63ba2af494edba695d781af8a0c6e89e4d06cf848b21d80/multidict-6.6.4-py3-none-any.whl", hash = "sha256:27d8f8e125c07cb954e54d75d04905a9bba8a439c1d84aca94949d4d03d8601c", size = 12313, upload-time = "2025-08-11T12:08:46.891Z" },
+]
+
+[[package]]
+name = "my-fake-useragent"
+version = "0.2.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/12/64/358def34ed2ba6b775d1f7891cf67ca65653ef2435f84f56c5e4cabb8b39/my_fake_useragent-0.2.1.tar.gz", hash = "sha256:64840ebf4c10cfc07af04313a6000d9802f72bbc7579095d75e02f25ed346387", size = 67345, upload-time = "2023-05-02T18:20:25.113Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/63/2d/ffec5d49c6f5e7a8f62d71c36de02601251c2e26db41a1c90e7ff0db6981/my_fake_useragent-0.2.1-py3-none-any.whl", hash = "sha256:48add6b06dd038cacba234b96fe8a50a1a7df376cf90830fc9640e7226ec507a", size = 69592, upload-time = "2023-05-02T18:20:22.899Z" },
 ]
 
 [[package]]
