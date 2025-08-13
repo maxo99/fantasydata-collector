@@ -9,24 +9,30 @@ logger = logging.getLogger(__name__)
 
 
 def merge_csvs():
-    csv_files = list(DOWNLOAD_DIR.glob("*.csv"))
-    if not csv_files:
-        logger.error("No CSV files found to merge")
-        return
+    try:
+        logger.info("Merging CSV files")
 
-    all_dataframes = []
-    for csv_file in csv_files:
-        df = pd.read_csv(csv_file)
-        df["Source"] = csv_file.stem
-        all_dataframes.append(df)
+        csv_files = list(DOWNLOAD_DIR.glob("*.csv"))
+        if not csv_files:
+            logger.error("No CSV files found to merge")
+            return
 
-    merged_df = pd.concat(all_dataframes, ignore_index=True)
+        all_dataframes = []
+        for csv_file in csv_files:
+            df = pd.read_csv(csv_file)
+            df["Source"] = csv_file.stem
+            all_dataframes.append(df)
 
-    duplicates = merged_df[merged_df.duplicated(subset=["Player Name"], keep=False)]
-    if not duplicates.empty:
-        logger.warning(f"Found {len(duplicates)} duplicate player entries:")
-        logger.warning(duplicates[["Player Name", "Source"]].to_string(index=False))
+        merged_df = pd.concat(all_dataframes, ignore_index=True)
 
-    output_file = DOWNLOAD_DIR / "merged_rankings.csv"
-    merged_df.to_csv(output_file, index=False)
-    logger.info(f"Merged data saved to: {output_file}")
+        duplicates = merged_df[merged_df.duplicated(subset=["Player Name"], keep=False)]
+        if not duplicates.empty:
+            logger.warning(f"Found {len(duplicates)} duplicate player entries:")
+            logger.warning(duplicates[["Player Name", "Source"]].to_string(index=False))
+
+        output_file = DOWNLOAD_DIR / "merged_rankings.csv"
+        merged_df.to_csv(output_file, index=False)
+        logger.info(f"Merged data saved to: {output_file}")
+    except Exception as e:
+        logger.error(f"Error occurred while merging CSV files: {e}")
+        raise e

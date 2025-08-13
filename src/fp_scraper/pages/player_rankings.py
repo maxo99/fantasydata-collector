@@ -66,12 +66,14 @@ async def download_csv_for_option(page: Page, option_text: str):
             f'button.select-advanced-content.select-advanced-content--button div:has-text("{option_text}")'
         )
         await option.click()
-        await page.wait_for_load_state("domcontentloaded")
+        await page.wait_for_load_state(timeout=9000)
 
         async with page.expect_download() as download_info:
+            logger.info(f"Downloading CSV for option: {option_text}")
             await page.locator(LOCATOR_DOWNLOAD_BUTTON).click(timeout=90000)
-
+        logger.info(f"CSV download initiated for option: {option_text}")
         download = await download_info.value
+        logger.info(f"CSV download completed for option: {option_text}")
         filename = f"{option_text.replace(' ', '_').replace('/', '_')}.csv"
         await download.save_as(DOWNLOAD_DIR / filename)
         return filename

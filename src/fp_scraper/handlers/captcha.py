@@ -22,7 +22,7 @@ async def check_for_captcha(page: Page):
         # )
         if not selector:
             return False
-        if selector.is_visible():
+        if await selector.is_visible():
             logger.info("Captcha detected")
             return True
 

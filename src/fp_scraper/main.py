@@ -3,9 +3,10 @@ import logging
 import sys
 from datetime import datetime
 
-from playwright.async_api import Page, async_playwright
+from playwright.async_api import async_playwright
 from playwright_stealth import Stealth
 
+from fp_scraper import context_builder
 from fp_scraper.config import DOWNLOAD_DIR
 from fp_scraper.constants import BROWSER_ARGS, FP_RANKINGS_PAGE
 from fp_scraper.handlers import content as content_handler
@@ -34,17 +35,12 @@ async def main():
     async with Stealth().use_async(async_playwright()) as p:
         browser = await p.chromium.launch(headless=headless, args=BROWSER_ARGS)
         logger.info(f"Launching browser with {headless=} and {BROWSER_ARGS=}")
-
-        context = None
+        _context_args = context_builder.get_context_args(record_mode)
+        logger.info(f"Setting Browser context args: {_context_args}")
+        context = await browser.new_context(**_context_args)
         if record_mode:
-            context = await browser.new_context(
-                record_video_dir="videos/",
-                record_video_size={"width": 640, "height": 480},
-            )
             await context.tracing.start(screenshots=True, snapshots=True, sources=True)
-            page: Page = await context.new_page()
-        else:
-            page: Page = await browser.new_page()
+        page = await context.new_page()
 
         if recorder:
             logger.info(f"Using request recorder in {recorder.mode} mode")
