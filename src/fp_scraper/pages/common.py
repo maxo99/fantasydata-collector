@@ -29,15 +29,18 @@ async def login(page: Page):
         logger.info("Login submitted")
         await page.wait_for_load_state()
 
-        captcha_stopped = await page.get_by_text("Unable to sign in").is_visible()
         captcha_present = await check_for_captcha(page)
-        if captcha_stopped or captcha_present:
-            logger.info("Captcha detected, attempting to solve")
-            solver = SolveCaptcha(page)
-            await solver.start()
-            logger.info("Captcha solved")
-            await page.click('button[type="submit"]')
-            await page.wait_for_load_state()
+        captcha_stopped = await page.get_by_text("Unable to sign in").is_visible()
+        if captcha_stopped and captcha_present:
+            try:
+                logger.info("Captcha detected, attempting to solve")
+                solver = SolveCaptcha(page)
+                await solver.start()
+                logger.info("Captcha solved")
+                await page.click('button[type="submit"]')
+                await page.wait_for_load_state()
+            except Exception as e:
+                logger.error(f"Captcha solving failed: {e}")
 
         else:
             logger.info("Login successful, without captcha")

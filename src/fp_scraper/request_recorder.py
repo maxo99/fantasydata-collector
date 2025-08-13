@@ -4,7 +4,6 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 
-
 class RequestRecorder:
     def __init__(self, cassette_dir: str = "cassettes"):
         self.cassette_dir = Path(cassette_dir)

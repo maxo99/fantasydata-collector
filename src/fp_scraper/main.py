@@ -34,7 +34,7 @@ async def main():
     async with Stealth().use_async(async_playwright()) as p:
         browser = await p.chromium.launch(headless=headless, args=BROWSER_ARGS)
         logger.info(f"Launching browser with {headless=} and {BROWSER_ARGS=}")
-        
+
         context = None
         if record_mode:
             context = await browser.new_context(
@@ -51,7 +51,9 @@ async def main():
             recorder.setup_recording(page)
 
         try:
-            await page.goto(FP_RANKINGS_PAGE, wait_until="domcontentloaded", timeout=60000)
+            await page.goto(
+                FP_RANKINGS_PAGE, wait_until="domcontentloaded", timeout=60000
+            )
 
             await login(page)
             await player_rankings_page.download_all_rankings(page)
@@ -62,8 +64,7 @@ async def main():
 
         finally:
             if record_mode and context:
-                await context.tracing.stop(path = DOWNLOAD_DIR / "trace.zip")
-
+                await context.tracing.stop(path=DOWNLOAD_DIR / "trace.zip")
 
             if recorder and record_mode:
                 recorder.save_cassette()

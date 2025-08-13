@@ -12,12 +12,14 @@ from fp_scraper.utils import delay_page
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 async def check_for_captcha(page: Page):
     try:
-        selector = await page.wait_for_selector(
-            "iframe[src*='recaptcha'], div.g-recaptcha, div.h-captcha, iframe#cf-chl-widget",
-            timeout=10000,
-        )
+        selector = page.locator("//iframe[@title='reCAPTCHA']").first
+        # selector = await page.wait_for_selector(
+        #     "iframe[src*='recaptcha'], div.g-recaptcha, div.h-captcha, iframe#cf-chl-widget",
+        #     timeout=10000,
+        # )
         if not selector:
             return False
         if selector.is_visible():
@@ -43,7 +45,7 @@ class SolveCaptcha:
             self.recaptcha = self.page.frame(name=name)
             if self.recaptcha is None:
                 raise ValueError("reCAPTCHA frame not found")
-            
+
             await self.recaptcha.click("//div[@class='recaptcha-checkbox-border']")
             await delay_page(self.page)
 
@@ -53,7 +55,7 @@ class SolveCaptcha:
             self.main_frame = self.page.frame(name=frame_name)
             if self.main_frame is None:
                 raise ValueError("Main frame not found for reCAPTCHA")
-            
+
             await self.main_frame.click("id=recaptcha-audio-button")
 
         except Exception as e:
